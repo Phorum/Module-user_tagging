@@ -1,0 +1,19 @@
+title: User Tagging
+desc: This module allows you to setup rules for creating custom template variables, based on a user's state / properties. This can for example be used to add some custom user status (e.g. "rookie", "regular", "veteran") to the users, based on their post count and/or registration date. Assignments can be done to authors on the read pages, to the user on the profile pages and to the logged in Phorum user on every page.
+version: 1.0.7
+require_version: 5.2.13
+link: http://www.phorum-support.de
+author: Maurice Makaay <maurice@phorum.org>
+category: viewlayout
+category: user_management
+
+# Hooks for filling the template variables.
+hook: profile|phorum_mod_user_tagging_profile
+hook: read|phorum_mod_user_tagging_read
+hook: list|phorum_mod_user_tagging_list
+hook: common_post_user|phorum_mod_user_tagging_common_post_user
+
+# Hooks for updating the post counters.
+hook: after_post|phorum_mod_user_tagging_after_post
+hook: after_approve|phorum_mod_user_tagging_after_approve
+

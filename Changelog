@@ -1,0 +1,49 @@
+Changelog:
+----------
+
+2010-06-19 v1.0.7
+
+    - Implemented ban list checking as a user matching criterium. Thanks
+		  to Phil Connolly for the idea and for writing up the patch.
+
+2009-10-21 v1.0.6
+
+    - Updated the module to be compatible with the new CSRF protection
+      features in Phorum 5.2.
+
+2008-10-17 v1.0.5
+
+    - Always show the group criterium, so we can show users that there
+      is such option available. Thanks to Ulf Dunkel for the suggestion.
+
+2008-08-09 v1.0.4
+
+    - Fixed the greater-than-or-equal comparisons. They were implemented
+      as greater-then in the code.
+
+2008-07-31 v1.0.3
+
+    - Added an option for tagging the authors and recent authors that
+      are shown on the message list pages.
+
+2008-06-11 v1.0.2
+
+    - Moved the tagging for the active Phorum user to the
+      common_post_user hook. This way, the template variables
+      can be setup early enough to give other modules access
+      to them.
+
+    - Added a new user matching option, to match users by their group.
+
+    - Improved some wordings on the settings page to make the
+      options easier to understand.
+
+2008-02-05 v1.0.1
+
+    - Removed some stale code which resulted in undefined index warnings
+      on the read page.
+
+2008-02-03 v1.0.0
+
+    - Initial release
+

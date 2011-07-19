@@ -1,0 +1,206 @@
+Module  : User Tagging
+Version : 1.0.7
+Author  : Maurice Makaay
+
+This module allows you to setup rules for creating custom template variables,
+based on a user's state / properties. This can for example be used to
+add some custom user status (e.g. "rookie", "regular", "veteran") to the
+users, based on their post count and/or registration date. Assignments can
+be done to authors on the read pages, to the user on the profile pages and
+to the logged in Phorum user on every page.
+
+You can setup user tags, based on the following parameters:
+
+* The total number of posts that a user made
+* The number of posts that a user made in a vroot
+* The number of posts that a user made in a forum
+* The registration date for the user
+* The date of last activity for the user
+* The type of user (user, moderator, admin)
+* The user status (active or deactivated)
+* The user id or username (a list of user ids or usernames is possible too)
+* Whether a user is in a certain group
+* Whether a user is in a banlist or not
+
+
+Info about post count based tagging:
+------------------------------------
+
+For post count tagging, the module will keep track of message post counts
+at various levels. It will keep track of the global post count, the post
+count per vroot and the post count per forum. In the rules that you setup,
+you can specify what level the module should consider for that rule. Using
+this, it is for example possible to define a rule that will only look at the
+number of messages that the user posted in the active forum.
+
+If you have forums that you do not want to include in the post counts,
+then you can configure these in the module settings. This might be useful
+if you have something like a sandbox forum, that your users can use for
+testing out forum features. Since this is not a serious forum, counting
+the messages as real posts might not be appropriate.
+
+
+Install:
+--------
+
+- Unpack the archive;
+
+- Move the directory "user_tagging" to the directory "mods"
+  within your Phorum installation;
+
+- Login as administrator in Phorum's administrative interface and
+  go to the "Modules" section;
+
+- Enable the module "User Tagging".
+
+- Edit the settings for the module to setup the tagging rules.
+
+- Edit the template(s) to display the tags that you have configured in
+  the tagging rules.
+
+- On the module's settings page, go to the recalculate page to
+  update the post counters for all messages that were posted. This step
+  might take a while for large forums.
+
+
+Example:
+--------
+
+This module is very flexible. If you don't have much experience with
+Phorum and its templates, then it might be a bit hard to understand and
+overwhelming at first. Below, I will try to provide a hands on example of
+what you could do with this module.
+
+Let's assume that you want to assign some special statuses to your users,
+based on the total number of messages that they posted. As an example, we
+define the following statuses:
+
+ * lurker   (0 posts)
+ * rookie   (1-9 posts)
+ * regular  (10-499 posts)
+ * veteran  (500+ posts)
+
+Then we can start out by creating a rule that has:
+
+ * Rule name               : Lurker status
+ * Activate for            : Any forum
+ * Activate for pages      : [X] for user profile pages
+                             [X] for message authors on the read pages
+                             [ ] for the authenticated user on every page
+ * Post count is           : total number of posts in all forums
+ * Post count is less than : 1
+ * Template var to fill    : POST_STATUS
+ * HTML code to use        : lurker
+
+By defining this rule, we tell the module to fill fields like
+{MESSAGES->user->POST_STATUS} (in the flat view read page),
+{MESSAGE->user->POST_STATUS} (in the threaded view read page) and
+{PROFILE->POST_STATUS} (in the user profile page) with the string "lurker"
+in case the post count for the user is less than one (a.k.a. "zero").
+
+In the interface, you can click on "copy" for the "Lurker status" rule now.
+This will create a copy of the existing rule, so you won't have to configure
+all fields again. After this, edit the "Lurker status (copy)" rule to setup
+the rule for rookie. You'll only have to change the following fields:
+
+ * Rule name            : Rookie status
+ * Post count >=        : 1
+ * Post count <         : 10
+ * HTML code to use     : rookie
+
+Now copy the "Rookie status" rule and edit the copy:
+
+ * Rule name            : Regular status
+ * Post count >=        : 10
+ * Post count <         : 500
+ * HTML code to use     : regular
+
+Now copy the "Regular status" rule and edit the copy:
+
+ * Rule name            : Veteran status
+ * Post count >=        : 500
+ * Post count <         : clear this field
+ * HTML code to use     : veteran
+
+After these steps, you have setup the rules that are needed for creating a
+post status that depends on the global post count. Now, all that is left is
+to make sure that the status will made visible in the pages. First, we could
+edit the template file "read.tpl". This one displays the messages for the
+flat reading mode. The default 5.2 emerald template has the following code
+in the {LOOP MESSAGES} loop:
+
+    {IF MESSAGES->user}
+        {LANG->DateReg}: {MESSAGES->user->date_added}<br />
+        {LANG->Posts}: {MESSAGES->user->posts}
+    {/IF}
+
+You could for example extend this code like below. The statement
+{IF MESSAGES->user->POST_STATUS} is not really needed for the rules that
+we configured here, because those rules will always fill the template variable
+{MESSAGES->user->POST_STATUS} with some info. But for other rules this check
+might be necessary, so I figured it would be best to include it in this
+example:
+
+    {IF MESSAGES->user}
+        {LANG->DateReg}: {MESSAGES->user->date_added}<br />
+        {LANG->Posts}: {MESSAGES->user->posts}
+        {IF MESSAGES->user->POST_STATUS}
+            <br />
+            Status: {MESSAGES->user->POST_STATUS}
+        {/IF}
+    {/IF}
+
+The same thing can be done in read_hybrid.tpl. In read_threads.tpl, there is
+a little difference. There you would use {MESSAGE->user->POST_STATUS} (so
+MESSAGE instead of MESSAGES).
+
+We also enabled the rules for the profile page. The default profile.tpl
+template contains the following code:
+
+    {IF PROFILE->posts}
+        <dt>{LANG->Posts}:&nbsp;</dt>
+        <dd>{PROFILE->posts}</dd>
+    {/IF}
+
+You could extend it like this:
+
+    {IF PROFILE->posts}
+        <dt>{LANG->Posts}:&nbsp;</dt>
+        <dd>{PROFILE->posts}</dd>
+    {/IF}
+    {IF PROFILE->POST_STATUS}
+        <dt>Status:&nbsp;</dt>
+        <dd>{PROFILE->POST_STATUS}</dd>
+    {/IF}
+
+After doing this, you should be able to see the new user status in the
+message reading and profile pages.
+
+Now, we could also use this status for displaying some message to encourage
+lurking users (users that only read posts) to start posting in the forums.
+For this, we would have to make the rule active for the logged in Phorum user
+as well. So first, go over all the rules and for each for them enable the
+option "for the authenticated user on every page". After this, you could
+add something like this to the header.tpl template:
+
+    {IF USER->POST_STATUS "lurker"}
+        For every day that you read messages on this forum, without posting
+        messages yourself, a cute kitten dies. So you'd better start posting!
+    {/IF}
+
+If you would want to display the message to anonymous users as well, you
+could even extend this to:
+
+    {IF NOT LOGGEDIN OR USER->POST_STATUS "lurker"}
+        Something terrible will happen to your left foot soon if you do not
+        start posting messages in this forum quickly!
+    {/IF}
+
+Instead of using the POST_STATUS rules, you could also setup a separate rule
+for doing this, which defines the message to show as the HTML code to put in
+the template variable (in the rule settings). I leave this as an exercise to
+the reader.
+
+I hope these examples provide you enough information to use the
+possibilities of this module. If you have questions, then please come to
+phorum.org and ask them in the thread about this module.
