@@ -17,7 +17,8 @@ You can setup user tags, based on the following parameters:
 * Whether a user is in a certain group
 * Whether a user is in a banlist or not
 
-For running this module, you need at least Phorum version @REQUIRED_VERSION@.
+For running this mod, you need Phorum @REQUIRED_VERSION@ or later.
+It will not work for earlier versions of Phorum.
 
 
 Info about post count based tagging:
