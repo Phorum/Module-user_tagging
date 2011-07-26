@@ -1,13 +1,8 @@
-Module  : User Tagging
-Version : 1.0.7
-Author  : Maurice Makaay
+Module  : @TITLE@
+Version : @VERSION@
+Author  : @AUTHOR@
 
-This module allows you to setup rules for creating custom template variables,
-based on a user's state / properties. This can for example be used to
-add some custom user status (e.g. "rookie", "regular", "veteran") to the
-users, based on their post count and/or registration date. Assignments can
-be done to authors on the read pages, to the user on the profile pages and
-to the logged in Phorum user on every page.
+@DESCRIPTION@
 
 You can setup user tags, based on the following parameters:
 
@@ -21,6 +16,8 @@ You can setup user tags, based on the following parameters:
 * The user id or username (a list of user ids or usernames is possible too)
 * Whether a user is in a certain group
 * Whether a user is in a banlist or not
+
+For running this module, you need at least Phorum version @REQUIRED_VERSION@.
 
 
 Info about post count based tagging:
@@ -45,13 +42,13 @@ Install:
 
 - Unpack the archive;
 
-- Move the directory "user_tagging" to the directory "mods"
+- Move the directory "@MODULE_ID@" to the directory "mods"
   within your Phorum installation;
 
 - Login as administrator in Phorum's administrative interface and
   go to the "Modules" section;
 
-- Enable the module "User Tagging".
+- Enable the module "@TITLE@".
 
 - Edit the settings for the module to setup the tagging rules.
 

@@ -1,10 +1,10 @@
-Changelog:
-----------
+Changelog for @PACKAGE@
+----------------------------------------------------------------------
 
 2010-06-19 v1.0.7
 
     - Implemented ban list checking as a user matching criterium. Thanks
-		  to Phil Connolly for the idea and for writing up the patch.
+      to Phil Connolly for the idea and for writing up the patch.
 
 2009-10-21 v1.0.6
 
